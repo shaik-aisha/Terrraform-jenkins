@@ -62,7 +62,7 @@ jobs:
         with:
           terraform_version: 1.6.6
 
-      # Download tfplan from previous job (use v4)
+      ## Download tfplan from previous job (use v4)
       - name: Download tfplan
         uses: actions/download-artifact@v4
         with:
@@ -71,3 +71,5 @@ jobs:
 
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
+
+        
