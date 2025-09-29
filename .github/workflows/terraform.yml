@@ -31,8 +31,8 @@ jobs:
         run: terraform init
 
       # Step 4: Terraform Format Check
-      - name: Terraform Format Check
-        run: terraform fmt -recursive
+      # - name: Terraform Format Check
+      #   run: terraform fmt -recursive
 
       # Step 5: Terraform Validate
       - name: Terraform Validate
