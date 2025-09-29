@@ -36,7 +36,7 @@ jobs:
 
       # Step 5: Security scan with tfsec
       - name: Terraform Security Scan (tfsec)
-        uses: aquasecurity/tfsec-action@v1
+        uses: aquasecurity/tfsec-action@v1.0.0
         with:
           directory: .
 
