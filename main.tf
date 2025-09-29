@@ -1,7 +1,25 @@
+# main.tf
+
+provider "aws" {
+  region = var.aws_region
+}
+
+# Find latest Amazon Linux 2 AMI
+data "aws_ami" "amazon_linux" {
+  most_recent = true
+  owners      = ["amazon"]
+
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
+  }
+}
+
+# Create EC2 instance
 resource "aws_instance" "assath" {
-  ami           = "ami-01b6d88af12965bb6"  # Amazon Linux 2
-  instance_type = "t3.micro"                # Change to Free Tier
+  ami           = data.aws_ami.amazon_linux.id
+  instance_type = var.instance_type
   tags = {
-    Name = "MyGitactionsEC2"
+    Name = var.instance_name
   }
 }
