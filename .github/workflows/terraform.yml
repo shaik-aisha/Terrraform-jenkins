@@ -32,16 +32,16 @@ jobs:
         run: terraform validate
 
       - name: Terraform Security Scan (tfsec)
-        uses: aquasecurity/tfsec-action@v1.0.0
+        uses: aquasecurity/tfsec-action@v1
         with:
           working_directory: .
 
       - name: Terraform Plan
         run: terraform plan -out=tfplan
 
-      # Persist tfplan as artifact
+      # Upload tfplan as artifact (use v4)
       - name: Upload tfplan
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: tfplan
           path: tfplan
@@ -62,9 +62,9 @@ jobs:
         with:
           terraform_version: 1.6.6
 
-      # Download tfplan from previous job
+      # Download tfplan from previous job (use v4)
       - name: Download tfplan
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: tfplan
           path: .
