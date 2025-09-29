@@ -1,7 +1,7 @@
 resource "aws_instance" "assath" {
-  ami           = "ami-0c02fb55956c7d316"  # Amazon Linux 2
+  ami           = "ami-01b6d88af12965bb6"  # Amazon Linux 2
   instance_type = "t2.micro"                # Change to Free Tier
   tags = {
-    Name = "MyFreeTierEC2"
+    Name = "MyGitactionsEC2"
   }
 }
