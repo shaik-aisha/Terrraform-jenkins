@@ -1,11 +1,7 @@
-provider "aws" {
-    region = "ap-south-1"  
-}
-
 resource "aws_instance" "assath" {
-  ami           = "ami-01b6d88af12965bb6" # ap-south-1
-  instance_type = "t2.micro"
+  ami           = "ami-0c02fb55956c7d316"  # Amazon Linux 2
+  instance_type = "t2.micro"                # Change to Free Tier
   tags = {
-      Name = "TF-Instance"
+    Name = "MyFreeTierEC2"
   }
 }
