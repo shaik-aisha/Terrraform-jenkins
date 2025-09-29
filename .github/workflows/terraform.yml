@@ -14,41 +14,41 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_REGION: ${{ secrets.AWS_REGION }}
     steps:
-      # Step 1: Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Step 2: Setup Terraform
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.6.6
 
-      # Step 3: Terraform Init
       - name: Terraform Init
         run: terraform init
 
-      # Step 4: Terraform Format Check
       - name: Terraform Format Check
         run: terraform fmt -check
 
-      # Step 5: Terraform Validate
       - name: Terraform Validate
         run: terraform validate
 
-      # Step 6: Security scan with tfsec
       - name: Terraform Security Scan (tfsec)
         uses: aquasecurity/tfsec-action@v1.0.0
         with:
           working_directory: .
 
-      # Step 7: Terraform Plan
       - name: Terraform Plan
         run: terraform plan -out=tfplan
 
+      # Persist tfplan as artifact
+      - name: Upload tfplan
+        uses: actions/upload-artifact@v3
+        with:
+          name: tfplan
+          path: tfplan
+
   apply:
     runs-on: ubuntu-latest
-    needs: plan  # ensures this job runs after Plan
+    needs: plan
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -61,6 +61,13 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.6.6
+
+      # Download tfplan from previous job
+      - name: Download tfplan
+        uses: actions/download-artifact@v3
+        with:
+          name: tfplan
+          path: .
 
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
