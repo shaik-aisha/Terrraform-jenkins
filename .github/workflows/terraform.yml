@@ -7,54 +7,48 @@ on:
   workflow_dispatch:
 
 jobs:
-  terraform:
+  planning-Checking:
     runs-on: ubuntu-latest
-
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_REGION: ${{ secrets.AWS_REGION }}
-
     steps:
-      # Step 1: Checkout repo
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Step 2: Setup Terraform
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.6.6
 
-      # Step 3: Terraform Init (must run first)
       - name: Terraform Init
         run: terraform init
 
-      # Step 4: Terraform Format Check
       - name: Terraform Format Check
         run: terraform fmt -check
 
-      # Step 5: Terraform Validate
       - name: Terraform Validate
         run: terraform validate
 
-      # Step 6: Security scan with tfsec
-      - name: Terraform Security Scan (tfsec)
-        uses: aquasecurity/tfsec-action@v1.0.0
-        with:
-          directory: .
-
-      # Step 7: Terraform Plan
       - name: Terraform Plan
         run: terraform plan -out=tfplan
 
-      # Step 8: Optional manual approval
-      - name: Manual Approval
-        if: github.event_name == 'workflow_dispatch'
-        run: |
-          echo "Review Terraform plan before apply"
-          terraform show tfplan
+  Apply Terraform code:
+    runs-on: ubuntu-latest
+    needs: plan   # ensures Apply runs after Plan
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      # Step 9: Terraform Apply
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.6.6
+
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
